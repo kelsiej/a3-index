@@ -13112,7 +13112,14 @@ div#notebook {
 <body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
-<script>
+
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="A4:-Predicting-Dengue-"><center>A4: Predicting Dengue </center><a class="anchor-link" href="#A4:-Predicting-Dengue-">&#182;</a></h1>
+</div>
+</div>
+</div><script>
   function code_toggle() {
     if (code_shown){
       $('div.input').hide('500');
@@ -13190,9 +13197,27 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[513]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train</span><span class="p">[</span><span class="s1">&#39;nvdi_avg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train</span><span class="p">[[</span><span class="s1">&#39;ndvi_ne&#39;</span><span class="p">,</span> <span class="s1">&#39;ndvi_nw&#39;</span><span class="p">,</span><span class="s1">&#39;ndvi_se&#39;</span><span class="p">,</span><span class="s1">&#39;ndvi_sw&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Just like in assignment 3, I&#39;ll be creating a new variable that is the average of all the NVDI&#39;s.</span>
+<span class="n">train</span><span class="p">[</span><span class="s1">&#39;nvdi_avg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train</span><span class="p">[[</span><span class="s1">&#39;ndvi_ne&#39;</span><span class="p">,</span> <span class="s1">&#39;ndvi_nw&#39;</span><span class="p">,</span><span class="s1">&#39;ndvi_se&#39;</span><span class="p">,</span><span class="s1">&#39;ndvi_sw&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">test</span><span class="p">[</span><span class="s1">&#39;nvdi_avg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[[</span><span class="s1">&#39;ndvi_ne&#39;</span><span class="p">,</span> <span class="s1">&#39;ndvi_nw&#39;</span><span class="p">,</span><span class="s1">&#39;ndvi_se&#39;</span><span class="p">,</span><span class="s1">&#39;ndvi_sw&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#I&#39;ll deal with null values by using the most recent value. This value should be close to what the </span>
+<span class="c1">#actual value is and allows me to not have to drop the row which would make my dataset smaller and less accurate.</span>
 <span class="n">train</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#dropping city because I do not want to look at each city individually (this would split the data in half) </span>
+<span class="c1">#and week_start_date because weekofyear serves the same purpose</span>
 <span class="n">train_no_lbl</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;city&#39;</span><span class="p">,</span> <span class="s1">&#39;week_start_date&#39;</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">train_no_lbl</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">test_fillna</span> <span class="o">=</span> <span class="n">test</span>
@@ -13209,10 +13234,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[514]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_no_lbl</span><span class="p">[</span><span class="s1">&#39;weekofyear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_no_lbl</span><span class="p">[</span><span class="s1">&#39;weekofyear&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Converting data types to float for later analysis (they are now all floats)</span>
+<span class="n">train_no_lbl</span><span class="p">[</span><span class="s1">&#39;weekofyear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_no_lbl</span><span class="p">[</span><span class="s1">&#39;weekofyear&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">train_no_lbl</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_no_lbl</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1">#train_no_lbl.dtypes</span>
 </pre></div>
 
     </div>
@@ -13223,20 +13247,21 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Feature-Selection">Feature Selection<a class="anchor-link" href="#Feature-Selection">&#182;</a></h1><p>To choose the best covariates to use in our model, I'll be using sklearn's SelectFromModel and the ExtraTreesClassifier, which uses Gini importance to find the feature importance. Since I'll be using the same features across all of my models I'll find them outside of the pipelines to cut down on processing time and to see what variables are chosen and their levels of importance.</p>
+<h2 id="Feature-Selection">Feature Selection<a class="anchor-link" href="#Feature-Selection">&#182;</a></h2><p>To choose the best covariates to use in our model, I'll be using sklearn's SelectFromModel and the ExtraTreesClassifier, which uses Gini importance to find the feature importance. I chose SelectFromModel using the ExtraTreesClassifier because it's simple but efficient. Since I'll be using the same features across all of my models I'll find them outside of the pipelines to cut down on processing time and to see what variables are chosen and their levels of importance. Feature selection is important to prevent overfitting and for quicker processing.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[334]:</div>
+<div class="prompt input_prompt">In&nbsp;[517]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">clf</span> <span class="o">=</span> <span class="n">ExtraTreesClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_no_lbl</span><span class="p">,</span> <span class="n">labels</span><span class="o">.</span><span class="n">total_cases</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">SelectFromModel</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">prefit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">X_new</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">train_no_lbl</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The new dataframe shape: &quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">X_new</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>            
 </pre></div>
 
@@ -13254,7 +13279,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(1456, 5)
+<pre>The new dataframe shape: 
+(1456, 5)
 </pre>
 </div>
 </div>
@@ -13267,6 +13293,14 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>There are <b>five</b> important features to include: <i>year, weekofyear, reanalysis_tdtr_k, station_diur_temp_rng_c, </i>and <i>reanalysis_min_air_temp_k</i>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The complete ranking of the features can be seen in the visualization below:</p>
 
 </div>
 </div>
@@ -13286,14 +13320,6 @@ div#notebook {
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The complete ranking of the features can be seen in the visualization below:</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -13403,7 +13429,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="GaussianNB">GaussianNB<a class="anchor-link" href="#GaussianNB">&#182;</a></h1><p>The Gaussian Naive Bayes classifier uses Bayes’ theorem of there being "naive" independence between features.</p>
+<h3 id="GaussianNB">GaussianNB<a class="anchor-link" href="#GaussianNB">&#182;</a></h3><p>The Gaussian Naive Bayes classifier uses Bayes’ theorem of there being "naive" independence between features. The accuracy score, mean absolute error, and mean squared error are as follows:</p>
 
 </div>
 </div>
@@ -13538,14 +13564,14 @@ MSE: 1399.0594965675057
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="RandomForestClassifier">RandomForestClassifier<a class="anchor-link" href="#RandomForestClassifier">&#182;</a></h1><p>Random forest uses a collection od decision trees (a desicion tree represents desicions).</p>
+<h3 id="RandomForestClassifier">RandomForestClassifier<a class="anchor-link" href="#RandomForestClassifier">&#182;</a></h3><p>Random forest uses a collection of decision trees (to simply put it, a desicion tree represents desicion pathways). The accuracy score, mean absolute error, and mean squared error are as follows:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[502]:</div>
+<div class="prompt input_prompt">In&nbsp;[522]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#no normalization/standardization needed for RandomForest</span>
@@ -13562,15 +13588,15 @@ MSE: 1399.0594965675057
 <span class="n">predictions_2</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy score: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions_2</span><span class="p">)))</span>
-<span class="n">acc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions_2</span><span class="p">))</span>
+<span class="c1">#acc.append(accuracy_score(y_test, predictions_2))</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MAE: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions_2</span><span class="p">)))</span>
-<span class="n">MAE</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions_2</span><span class="p">))</span>
+<span class="c1">#MAE.append(metrics.mean_absolute_error(y_test, predictions_2))</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MSE: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions_2</span><span class="p">)))</span>
-<span class="n">MSE</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions_2</span><span class="p">))</span>
+<span class="c1">#MSE.append(metrics.mean_squared_error(y_test, predictions_2))</span>
 
-<span class="n">mdl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;RandomForestClassifier&#39;</span><span class="p">)</span>
+<span class="c1">#mdl.append(&#39;RandomForestClassifier&#39;)</span>
 </pre></div>
 
     </div>
@@ -13587,9 +13613,9 @@ MSE: 1399.0594965675057
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Accuracy score: 0.12356979405034325
-MAE: 13.05949656750572
-MSE: 877.1327231121281
+<pre>Accuracy score: 0.12814645308924486
+MAE: 13.025171624713959
+MSE: 905.1762013729978
 </pre>
 </div>
 </div>
@@ -13600,10 +13626,11 @@ MSE: 877.1327231121281
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[433]:</div>
+<div class="prompt input_prompt">In&nbsp;[525]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The parameters selected to use in this model:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13620,7 +13647,8 @@ MSE: 877.1327231121281
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;randomforestclassifier__max_features&#39;: &#39;sqrt&#39;, &#39;randomforestclassifier__n_estimators&#39;: 100}
+<pre>The parameters selected to use in this model:
+{&#39;randomforestclassifier__max_features&#39;: &#39;auto&#39;, &#39;randomforestclassifier__n_estimators&#39;: 200}
 </pre>
 </div>
 </div>
@@ -13686,7 +13714,7 @@ MSE: 877.1327231121281
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="KNeighborsClassifier">KNeighborsClassifier<a class="anchor-link" href="#KNeighborsClassifier">&#182;</a></h1><p>The k-Nearest Neighbor classifier finds similar cases to the given data case and then returns the average of the most similar data cases.</p>
+<h3 id="KNeighborsClassifier">KNeighborsClassifier<a class="anchor-link" href="#KNeighborsClassifier">&#182;</a></h3><p>The k-Nearest Neighbor classifier finds similar cases to the given data case and then returns the average of the most similar data cases. The accuracy score, mean absolute error, and mean squared error are as follows:</p>
 
 </div>
 </div>
@@ -13738,6 +13766,37 @@ MSE: 877.1327231121281
 <pre>Accuracy score: 0.11899313501144165
 MAE: 15.475972540045767
 MSE: 1325.9565217391305
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[523]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The parameters selected to use in this model:&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The parameters selected to use in this model:
 </pre>
 </div>
 </div>
@@ -13810,20 +13869,12 @@ MSE: 1325.9565217391305
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>submission3.to_csv("sub_fin_3.csv", encoding='utf-8', index=False)</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[519]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#submission3.to_csv(&quot;sub_fin_3.csv&quot;, encoding=&#39;utf-8&#39;, index=False)</span>
 </pre></div>
 
     </div>
@@ -13834,7 +13885,7 @@ MSE: 1325.9565217391305
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="DesicionTreeClassifier">DesicionTreeClassifier<a class="anchor-link" href="#DesicionTreeClassifier">&#182;</a></h1><p>Desicion trees make the best splits, seperating the data for the predictions being made.</p>
+<h3 id="DesicionTreeClassifier">DesicionTreeClassifier<a class="anchor-link" href="#DesicionTreeClassifier">&#182;</a></h3><p>Desicion trees make the best splits, seperating the data for the predictions being made. The accuracy score, mean absolute error, and mean squared error are as follows:</p>
 
 </div>
 </div>
@@ -13912,6 +13963,37 @@ MSE: 1398.0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[524]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The parameters selected to use in this model:&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The parameters selected to use in this model:
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[437]:</div>
 <div class="inner_cell">
     <div class="input_area">
@@ -13974,18 +14056,23 @@ MSE: 1398.0
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>submission3.to_csv("sub_fin_3.csv", encoding='utf-8', index=False)</p>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[520]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#submission3.to_csv(&quot;sub_fin_3.csv&quot;, encoding=&#39;utf-8&#39;, index=False)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
-</div>
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="XGBClassifier">XGBClassifier<a class="anchor-link" href="#XGBClassifier">&#182;</a></h1><p>Gradient boost classifiers also build desicion trees, but do so one at a time so new trees can correct errors previous trees may have made.</p>
+<h3 id="XGBClassifier">XGBClassifier<a class="anchor-link" href="#XGBClassifier">&#182;</a></h3><p>Gradient boost classifiers also build desicion trees, but do so one at a time so new trees can correct errors previous trees may have made. The accuracy score, mean absolute error, and mean squared error are as follows:</p>
 
 </div>
 </div>
@@ -14077,28 +14164,18 @@ MSE: 1299.2631578947369
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>submission5.to_csv("sub_fin_5.csv", encoding='utf-8', index=False)</p>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[526]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#submission5.to_csv(&quot;sub_fin_5.csv&quot;, encoding=&#39;utf-8&#39;, index=False)</span>
+</pre></div>
 
+    </div>
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Comparison-Between-Models">Comparison Between Models<a class="anchor-link" href="#Comparison-Between-Models">&#182;</a></h1><p>To review, the models I've used are:</p>
-<ol>
-<li>GaussianNB</li>
-<li>RandomForestClassifier</li>
-<li>KNeighborsClassifier</li>
-<li>DecisionTreeClassifier</li>
-<li>XGBClassifier</li>
-</ol>
 
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -14636,22 +14713,10 @@ MSE: 1299.2631578947369
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>From these graphs, you can see that the GaussianNB predictions aren't matching the actual values as well as the other graphs. The predictions from RandomForest match the outliers from the actual values quite well, which probably contributes to their lower mean squared error score. Finally, XGboost which had the highest accuracy score seems to be matching the predictions with their actual values quite well.</p>
+<p>For the DengAI competition, I haven't been able to check the scores of all my models because of the submission limitation, but so far the GaussianNB model is in the lead.</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div>
     </div>
   </div>
